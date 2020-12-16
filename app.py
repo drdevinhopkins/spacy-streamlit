@@ -1,10 +1,8 @@
-# import spacy
-from spacy_streamlit import load_model
+import spacy
 import streamlit as st
 import pandas as pd
 import json
 import requests
-from spacy_streamlit import visualize_ner
 import umls
 from spacy.tokens import Span
 from spacy import displacy
@@ -25,9 +23,17 @@ def get_html(html: str):
 #               show_table=False
 #               )
 
+# spacy_model = 'en_core_sci_sm'
+
+# spacy_model = st.sidebar.selectbox("Model name", ["en_core_sci_sm", "en_core_web_md"])
+# nlp = load_model(spacy_model)
+
+@st.cache(allow_output_mutation=True, suppress_st_warning=True)
+def load_model(name):
+    return spacy.load(name)
+
 
 spacy_model = 'en_core_sci_sm'
-# spacy_model = st.sidebar.selectbox("Model name", ["en_core_sci_sm", "en_core_web_md"])
 nlp = load_model(spacy_model)
 
 # st.write(nlp.pipeline)
@@ -87,8 +93,8 @@ target_labels = ['Finding', 'Disease or Syndrome',
 html = displacy.render(
     doc, style="ent",
     options={
-        # "ents": ['Finding', 'Disease or Syndrome',
-        #               'Sign or Symptom', 'Pathologic Function'],
+        "ents": ['FINDING', 'DISEASE OR SYNDROME',
+                 'SIGN OR SYMPTOM', 'PATHOLOGIC FUNCTION'],
         "colors": {'FINDING': '#D0ECE7', 'DISEASE OR SYNDROME': '#D6EAF8',
                    'SIGN OR SYMPTOM': '#E8DAEF', 'PATHOLOGIC FUNCTION': '#FADBD8'}
         # DAF7A6

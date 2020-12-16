@@ -12,8 +12,13 @@ try:
         umls_apikey = file.read().replace('\n', '')
     st.write('local ', umls_apikey)
 except:
-    with open('https://www.dropbox.com/s/m10v41n5to4jfo8/umls_api.txt?dl=1', 'r') as file:
-        umls_apikey = file.read().replace('\n', '')
+    url = "https://www.dropbox.com/s/m10v41n5to4jfo8/umls_api.txt?dl=1"
+    file = urllib.request.urlopen(url)
+
+    for line in file:
+        decoded_line = line.decode("utf-8")
+        # print(decoded_line)
+    umls_apikey = decoded_line
     st.write('dropbox ', umls_apikey)
 
 

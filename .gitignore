@@ -1,2 +1,3 @@
 /.vscode
 umls_api.txt
+__pycache__/umls.cpython-38.pyc

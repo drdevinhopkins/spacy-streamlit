@@ -7,11 +7,12 @@ import umls
 from spacy.tokens import Span
 from spacy import displacy
 import urllib
+from utils import get_html
 
 try:
-    with open('umls_api2.txt', 'r') as file:
+    with open('umls_api.txt', 'r') as file:
         umls_apikey = file.read().replace('\n', '')
-    st.write('local ', umls_apikey)
+    # st.write('local ', umls_apikey)
 except:
     url = "https://www.dropbox.com/s/m10v41n5to4jfo8/umls_api.txt?dl=1"
     file = urllib.request.urlopen(url)
@@ -20,15 +21,7 @@ except:
         decoded_line = line.decode("utf-8")
         # print(decoded_line)
     umls_apikey = decoded_line
-    st.write('dropbox ', umls_apikey)
-
-
-def get_html(html: str):
-    """Convert HTML so it can be rendered."""
-    WRAPPER = """<div style="overflow-x: auto; border: 1px solid #e6e9ef; border-radius: 0.25rem; padding: 1rem; margin-bottom: 2.5rem">{}</div>"""
-    # Newlines seem to mess with the rendering
-    html = html.replace("\n", " ")
-    return WRAPPER.format(html)
+    # st.write('dropbox ', umls_apikey)
 
 
 # nlp = spacy.load("en_core_sci_sm")
@@ -88,12 +81,25 @@ doc = nlp(text)
 
 # disabled.restore()
 target_labels = ['Finding', 'Disease or Syndrome',
-                 'Sign or Symptom', 'Pathologic Function']
+                 'Sign or Symptom', 'Pathologic Function', 'Neoplastic Process']
 
 # st.write(doc.ents)
 
 # for ent in doc.ents:
 #     st.write(ent.text, ' - ', ent.label_)
+
+
+html = displacy.render(
+    doc, style="ent",
+    options={
+        "ents": ['FINDING', 'DISEASE OR SYNDROME',
+                 'SIGN OR SYMPTOM', 'PATHOLOGIC FUNCTION', 'NEOPLASTIC PROCESS'],
+        "colors": {'FINDING': '#D0ECE7', 'DISEASE OR SYNDROME': '#D6EAF8',
+                   'SIGN OR SYMPTOM': '#E8DAEF', 'PATHOLOGIC FUNCTION': '#FADBD8', 'NEOPLASTIC PROCESS': '#DAF7A6'}
+    }
+)
+style = "<style>mark.entity { display: inline-block }</style>"
+st.write(f"{style}{get_html(html)}", unsafe_allow_html=True)
 
 # data = [
 #     [str(getattr(ent, attr)) for attr in ["text", "label_", "start", "end", "start_char", "end_char"]
@@ -105,33 +111,18 @@ target_labels = ['Finding', 'Disease or Syndrome',
 #                   )
 # st.dataframe(df)
 
-html = displacy.render(
-    doc, style="ent",
-    options={
-        "ents": ['FINDING', 'DISEASE OR SYNDROME',
-                 'SIGN OR SYMPTOM', 'PATHOLOGIC FUNCTION'],
-        "colors": {'FINDING': '#D0ECE7', 'DISEASE OR SYNDROME': '#D6EAF8',
-                   'SIGN OR SYMPTOM': '#E8DAEF', 'PATHOLOGIC FUNCTION': '#FADBD8'}
-        # DAF7A6
-    }
-)
-style = "<style>mark.entity { display: inline-block }</style>"
-st.write(f"{style}{get_html(html)}", unsafe_allow_html=True)
 
+# st.write('')
 
-# visualize_ner(doc,
-#               #   labels=nlp.get_pipe("ner").labels,
-#               labels=['ENTITY'],
-#               show_table=True,
-#               )
-
-# tgt = umls.get_tgt()
+# tgt = umls.get_tgt(umls_apikey)
 
 # cui_text = st.text_input('CUI Text', 'chest pain')
 
 # search_cui = umls.search_by_atom(cui_text, tgt).loc[0].ui
 
 # st.write(search_cui)
+
+# st.write(umls.search_by_cui(search_cui, tgt)['name'])
 
 # st.write(umls.search_by_cui(search_cui, tgt)['semanticTypes'][0]['name'])
 

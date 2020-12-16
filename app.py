@@ -6,9 +6,10 @@ import requests
 import umls
 from spacy.tokens import Span
 from spacy import displacy
+import urllib
 
 try:
-    with open('umls_api.txt', 'r') as file:
+    with open('umls_api2.txt', 'r') as file:
         umls_apikey = file.read().replace('\n', '')
     st.write('local ', umls_apikey)
 except:

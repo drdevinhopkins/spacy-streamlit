@@ -61,7 +61,7 @@ except:
     st.write('')
 
 text = st.text_area(
-    'Text', "Past medical history includes hypertension, dyslipidemia and diabetes, and a family history of coronary artery disease.")
+    'Text', "Past medical history includes hypertension, dyslipidemia and diabetes, and a family history of coronary artery disease. He started having chest pain 4 hours ago, associated with dyspnea, nausea, and diaphoresis.")
 
 doc = nlp(text)
 

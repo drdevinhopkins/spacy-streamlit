@@ -7,6 +7,15 @@ import umls
 from spacy.tokens import Span
 from spacy import displacy
 
+try:
+    with open('umls_api.txt', 'r') as file:
+        umls_apikey = file.read().replace('\n', '')
+    st.write('local ', umls_apikey)
+except:
+    with open('https://www.dropbox.com/s/m10v41n5to4jfo8/umls_api.txt?dl=1', 'r') as file:
+        umls_apikey = file.read().replace('\n', '')
+    st.write('dropbox ', umls_apikey)
+
 
 def get_html(html: str):
     """Convert HTML so it can be rendered."""
@@ -49,7 +58,7 @@ def add_umls_entities(doc):
         # if ent.label_ == "PERSON" and ent.start != 0:
         #     prev_token = doc[ent.start - 1]
         #     if prev_token.text in ("Dr", "Dr.", "Mr", "Mr.", "Ms", "Ms."):
-        tgt = umls.get_tgt()
+        tgt = umls.get_tgt(umls_apikey)
         cui = umls.search_by_atom(ent.text, tgt).loc[0].ui
         new_label = umls.search_by_cui(cui, tgt)[
             'semanticTypes'][0]['name']

@@ -1,13 +1,10 @@
-from spacy.matcher import PhraseMatcher
-from spacy.tokens import Token, Span
 import requests
 from bs4 import BeautifulSoup
 import json
 import pandas as pd
 
 
-def get_tgt():
-    apikey = '586572e2-7326-4bc6-bbf8-5c91af73bd74'
+def get_tgt(apikey):
     url = 'https://utslogin.nlm.nih.gov/cas/v1/api-key'
     myobj = {'apikey': apikey}
     response = requests.post(url, data=myobj)

@@ -54,17 +54,22 @@ nlp = load_model(spacy_model)
 def add_umls_entities(doc):
     new_ents = []
     for ent in doc.ents:
-        # if ent.label_ == "PERSON" and ent.start != 0:
-        #     prev_token = doc[ent.start - 1]
-        #     if prev_token.text in ("Dr", "Dr.", "Mr", "Mr.", "Ms", "Ms."):
-        tgt = umls.get_tgt(umls_apikey)
-        cui = umls.search_by_atom(ent.text, tgt).loc[0].ui
-        new_label = umls.search_by_cui(cui, tgt)[
-            'semanticTypes'][0]['name']
-        new_ent = Span(doc, ent.start, ent.end, label=new_label)
-        new_ents.append(new_ent)
-        # else:
-        #     new_ents.append(ent)
+        try:
+            # if ent.label_ == "PERSON" and ent.start != 0:
+            #     prev_token = doc[ent.start - 1]
+            #     if prev_token.text in ("Dr", "Dr.", "Mr", "Mr.", "Ms", "Ms."):
+            tgt = umls.get_tgt(umls_apikey)
+            cui = umls.search_by_atom(ent.text, tgt).loc[0].ui
+            new_label = umls.search_by_cui(cui, tgt)[
+                'semanticTypes'][0]['name']
+            new_ent = Span(doc, ent.start, ent.end, label=new_label)
+            new_ents.append(new_ent)
+            # else:
+            #     new_ents.append(ent)
+        except:
+            new_label = 'other'
+            new_ent = Span(doc, ent.start, ent.end, label=new_label)
+            new_ents.append(new_ent)
     doc.ents = new_ents
     return doc
 

@@ -55,17 +55,12 @@ def add_umls_entities(doc):
     new_ents = []
     for ent in doc.ents:
         try:
-            # if ent.label_ == "PERSON" and ent.start != 0:
-            #     prev_token = doc[ent.start - 1]
-            #     if prev_token.text in ("Dr", "Dr.", "Mr", "Mr.", "Ms", "Ms."):
             tgt = umls.get_tgt(umls_apikey)
             cui = umls.search_by_atom(ent.text, tgt).loc[0].ui
             new_label = umls.search_by_cui(cui, tgt)[
                 'semanticTypes'][0]['name']
             new_ent = Span(doc, ent.start, ent.end, label=new_label)
             new_ents.append(new_ent)
-            # else:
-            #     new_ents.append(ent)
         except:
             new_label = 'other'
             new_ent = Span(doc, ent.start, ent.end, label=new_label)
@@ -86,7 +81,7 @@ doc = nlp(text)
 
 # disabled.restore()
 target_labels = ['Finding', 'Disease or Syndrome',
-                 'Sign or Symptom', 'Pathologic Function', 'Neoplastic Process']
+                 'Sign or Symptom', 'Pathologic Function', 'Neoplastic Process', 'Other']
 
 # st.write(doc.ents)
 
@@ -98,7 +93,7 @@ html = displacy.render(
     doc, style="ent",
     options={
         "ents": ['FINDING', 'DISEASE OR SYNDROME',
-                 'SIGN OR SYMPTOM', 'PATHOLOGIC FUNCTION', 'NEOPLASTIC PROCESS'],
+                 'SIGN OR SYMPTOM', 'PATHOLOGIC FUNCTION', 'NEOPLASTIC PROCESS', 'OTHER'],
         "colors": {'FINDING': '#D0ECE7', 'DISEASE OR SYNDROME': '#D6EAF8',
                    'SIGN OR SYMPTOM': '#E8DAEF', 'PATHOLOGIC FUNCTION': '#FADBD8', 'NEOPLASTIC PROCESS': '#DAF7A6'}
     }
